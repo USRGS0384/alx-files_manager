@@ -1,11 +1,13 @@
-import { getMongoInstance, ObjectId } from 'mongodb';
-import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
-import path from 'path';
-import mime from 'mime-types';
-import { Queue } from 'bull';
-import dbClient from '../utils/db';
-import redisClient from '../utils/redis';
+const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis');
+const Queue = require('bull'); // Importing Bull correctly
+const fileQueue = new Queue('file generation'); // Initializing the file generation queue
+
+// Additional imports or setup code
+const fs = require('fs');
+const { promisify } = require('util');
+const path = require('path');
+const mime = require('mime-types');
 
 // Create a queue to process file generation jobs
 const fileQueue = new Queue('file generation');
