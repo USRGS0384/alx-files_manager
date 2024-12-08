@@ -12,44 +12,48 @@ const File = mongoose.model('File');
 const checkRedis = () => {
   return new Promise((resolve) => {
     redisClient.ping((err, reply) => {
-      resolve(err ? false : true);
+      resolve(err == null); // Ensure `err` is explicitly checked
     });
   });
 };
 
 // Utility function to check DB health
-const checkDB = async () => {
-  try {
-    await mongoose.connection.db.admin().ping();
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
-
-// Controller to handle the /status route
-exports.getStatus = async (req, res) => {
-  const redisStatus = await checkRedis();
-  const dbStatus = await checkDB();
-
-  return res.status(200).json({
-    redis: redisStatus,
-    db: dbStatus,
+const checkDB = () => {
+  return new Promise((resolve) => {
+    mongoose.connection.db.admin().ping((err, result) => {
+      resolve(err == null); // Ensure `err` is explicitly checked
+    });
   });
 };
 
-// Controller to handle the /stats route
-exports.getStats = async (req, res) => {
-  try {
-    const userCount = await User.countDocuments();
-    const fileCount = await File.countDocuments();
-
-    return res.status(200).json({
-      users: userCount,
-      files: fileCount,
+// Controller to handle the /status route
+exports.getStatus = (req, res) => {
+  Promise.all([checkRedis(), checkDB()])
+    .then(([redisStatus, dbStatus]) => {
+      return res.status(200).json({
+        redis: redisStatus,
+        db: dbStatus,
+      });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error: 'Error fetching status' });
     });
-  } catch (error) {
-    return res.status(500).json({ error: 'Error fetching stats' });
-  }
+};
+
+// Controller to handle the /stats route
+exports.getStats = (req, res) => {
+  Promise.all([
+    User.countDocuments(),
+    File.countDocuments(),
+  ])
+    .then(([userCount, fileCount]) => {
+      return res.status(200).json({
+        users: userCount,
+        files: fileCount,
+      });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error: 'Error fetching stats' });
+    });
 };
 
