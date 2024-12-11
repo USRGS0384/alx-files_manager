@@ -1,44 +1,45 @@
-// utils/db.js
 import { MongoClient } from 'mongodb';
 
 class DBClient {
-    constructor() {
-        this.client = new MongoClient(`mongodb://${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 27017}`);
-        this.db = null;
-    }
+  constructor() {
+    const {
+      DB_HOST = 'localhost',
+      DB_PORT = 27017,
+      DB_DATABASE = 'files_manager',
+    } = process.env;
 
-    async connect() {
-        if (!this.db) {
-            await this.client.connect();
-            this.db = this.client.db(process.env.DB_DATABASE || 'files_manager');
-        }
-        return this.db;
-    }
+    this.host = DB_HOST;
+    this.port = DB_PORT;
+    this.database = DB_DATABASE;
 
-    async isAlive() {
-        try {
-            const db = await this.connect();
-            const ping = await db.command({ ping: 1 });
-            return ping.ok === 1;
-        } catch (err) {
-            return false;
-        }
-    }
+    const url = `mongodb://${this.host}:${this.port}/${this.database}`;
 
-    async nbUsers() {
-        const db = await this.connect();
-        const usersCollection = db.collection('users');
-        return usersCollection.countDocuments();
-    }
+    MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
+      if (err) {
+        console.error(`DB Connection Error: ${err}`);
+        return;
+      }
+      this.db = client.db(this.database);
+    });
+  }
 
-    async nbFiles() {
-        const db = await this.connect();
-        const filesCollection = db.collection('files');
-        return filesCollection.countDocuments();
-    }
+  isAlive() {
+    return !!this.db;
+  }
+
+  async nbUsers() {
+    if (!this.isAlive()) return 0;
+
+    return this.db.collection('users').countDocuments();
+  }
+
+  async nbFiles() {
+    if (!this.isAlive()) return 0;
+
+    return this.db.collection('files').countDocuments();
+  }
 }
 
-// Create an instance and export it
 const dbClient = new DBClient();
-export default dbClient;
 
+export default dbClient;
