@@ -1,4 +1,6 @@
-import dbClient from './utils/db.js';
+// 1-main.js
+import dbClient from './utils/db.js'; // Importing the default export
+
 
 const waitConnection = () => {
     return new Promise((resolve, reject) => {
