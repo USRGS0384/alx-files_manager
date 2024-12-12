@@ -1,5 +1,7 @@
 // controllers/FilesController.js
 
+import pkg from 'mongodb';
+const { ObjectId } = pkg;
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
