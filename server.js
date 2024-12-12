@@ -1,7 +1,7 @@
 // server.js
 
 import express from 'express';
-import router from './routes/index.js';  // Adjust the path and add the .js extension
+import router from './routes/index.js';
 
 const app = express();
 app.use(express.json());
