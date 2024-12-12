@@ -10,7 +10,7 @@
     "check-lint": "lint [0-9]*.js",
     "start-server": "nodemon --exec babel-node --presets @babel/preset-env ./server.js",
     "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./worker.js",
-    "dev": "nodemon --exec babel-node --presets @babel/preset-env 1-main.js"
+    "dev": "nodemon 1-main.js"
   },
   "author": "",
   "license": "ISC",
