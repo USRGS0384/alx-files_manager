@@ -24,7 +24,6 @@ class DBClient {
             }
         });
     }
-}
 
     isAlive() {
         return this.client && this.client.topology && this.client.topology.isConnected();
