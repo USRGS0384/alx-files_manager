@@ -20,14 +20,14 @@ class DBClient {
                 console.error('MongoDB client not connected to the server:', err);
             } else {
                 console.log('MongoDB client connected to the server');
+                this.db = this.client.db(database);
             }
         });
-
-        this.db = this.client.db(database);
     }
+}
 
     isAlive() {
-        return this.client.isConnected();
+        return this.client && this.client.topology && this.client.topology.isConnected();
     }
 
     async nbUsers() {
