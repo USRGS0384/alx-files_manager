@@ -1,4 +1,3 @@
-// utils/db.js
 import { MongoClient } from 'mongodb';
 
 class DBClient {
@@ -32,5 +31,5 @@ class DBClient {
 }
 
 const dbClient = new DBClient();
-export default dbClient; // Use export default here
+export default dbClient;
 

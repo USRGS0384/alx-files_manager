@@ -1,6 +1,4 @@
-// 1-main.js
-import dbClient from './utils/db.js'; // Importing the default export
-
+import dbClient from './utils/db';
 
 const waitConnection = () => {
     return new Promise((resolve, reject) => {
@@ -9,18 +7,16 @@ const waitConnection = () => {
             await setTimeout(() => {
                 i += 1;
                 if (i >= 10) {
-                    reject()
-                }
-                else if(!dbClient.isAlive()) {
-                    repeatFct()
-                }
-                else {
-                    resolve()
+                    reject();
+                } else if (!dbClient.isAlive()) {
+                    repeatFct();
+                } else {
+                    resolve();
                 }
             }, 1000);
         };
         repeatFct();
-    })
+    });
 };
 
 (async () => {
@@ -30,3 +26,4 @@ const waitConnection = () => {
     console.log(await dbClient.nbUsers());
     console.log(await dbClient.nbFiles());
 })();
+
