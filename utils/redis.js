@@ -1,53 +1,58 @@
 import { createClient } from 'redis';
 
-// Class to define methods for Redis commands
 class RedisClient {
   constructor() {
     this.client = createClient();
+    
+    // Handling connection errors
+    this.client.on('error', (err) => {
+      console.error('Redis error:', err);
+    });
 
-    // Log error if Redis connection fails
-    this.client.on('error', (error) => {
-      console.error(`Redis client not connected to server: ${error}`);
+    // Connecting event
+    this.client.on('connect', () => {
+      console.log('Redis client connected');
     });
   }
 
-  // Check connection status and return boolean
+  // Check if Redis client is connected
   isAlive() {
-    return this.client.connected;
+    return this.client.isOpen;
   }
 
-  // Get value for the given key from Redis server
+  // Get value for the given key
   async get(key) {
     try {
-      return await this.client.get(key);
-    } catch (error) {
-      console.error(`Failed to get value for key ${key}: ${error}`);
-      throw error;
+      const value = await this.client.get(key);
+      return value; // Return the Redis value
+    } catch (err) {
+      console.error(`Failed to get value for key ${key}:`, err);
+      return null;
     }
   }
 
-  // Set key-value pair to Redis server with expiry time
-  async set(key, value, time) {
+  // Set key-value with an expiration time
+  async set(key, value, duration) {
     try {
-      await this.client.set(key, value);
-      await this.client.expire(key, time);
-    } catch (error) {
-      console.error(`Failed to set value for key ${key}: ${error}`);
-      throw error;
+      await this.client.setEx(key, duration, value); // setEx sets the expiration time
+      console.log(`Key ${key} set with expiration time of ${duration} seconds.`);
+    } catch (err) {
+      console.error(`Failed to set key ${key}:`, err);
     }
   }
 
-  // Delete key-value pair from Redis server
+  // Delete key-value from Redis
   async del(key) {
     try {
       await this.client.del(key);
-    } catch (error) {
-      console.error(`Failed to delete key ${key}: ${error}`);
-      throw error;
+      console.log(`Key ${key} deleted.`);
+    } catch (err) {
+      console.error(`Failed to delete key ${key}:`, err);
     }
   }
 }
 
+// Export an instance of RedisClient
 const redisClient = new RedisClient();
 export default redisClient;
 
