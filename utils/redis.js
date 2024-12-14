@@ -1,6 +1,4 @@
 // utils/redis.js
-import { createClient } from 'redis';
-
 class RedisClient {
   constructor() {
     // Create a Redis client instance
@@ -17,44 +15,30 @@ class RedisClient {
     });
   }
 
-  // Check if Redis client is alive
-  isAlive() {
-    return this.client.isReady;
-  }
-
-  // Get value from Redis for a given key
-  async get(key) {
-    try {
-      const value = await this.client.get(key);
-      return value; // Returns null if the key doesn't exist
-    } catch (err) {
-      console.error('Error getting value from Redis:', err);
-      return null;
-    }
-  }
-
   // Set value in Redis with expiration time
   async set(key, value, duration) {
     try {
+      // Ensure 'key' is a string
+      if (typeof key !== 'string') {
+        throw new TypeError('The key must be a string.');
+      }
+
+      // Ensure 'value' is a valid type (string, number, or buffer)
+      if (typeof value !== 'string' && typeof value !== 'number' && !Buffer.isBuffer(value)) {
+        throw new TypeError('The value must be a string, number, or buffer.');
+      }
+
+      // Ensure 'duration' is a positive integer
+      if (!Number.isInteger(duration) || duration <= 0) {
+        throw new TypeError('The duration must be a positive integer.');
+      }
+
+      // Set the value in Redis with expiration time
       await this.client.setEx(key, duration, value);
       console.log(`Key "${key}" set with expiration of ${duration} seconds.`);
     } catch (err) {
       console.error('Error setting value in Redis:', err);
     }
   }
-
-  // Delete value from Redis for a given key
-  async del(key) {
-    try {
-      await this.client.del(key);
-      console.log(`Key "${key}" deleted from Redis.`);
-    } catch (err) {
-      console.error('Error deleting value from Redis:', err);
-    }
-  }
 }
-
-// Create and export an instance of RedisClient
-const redisClient = new RedisClient();
-export default redisClient;
 
