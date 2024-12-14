@@ -1,10 +1,10 @@
-import redis from 'redis';
+import { createClient } from 'redis';
 import { promisify } from 'util';
 
 class RedisClient {
     constructor() {
         // Create Redis client
-        this.client = redis.createClient();
+        this.client = createClient();
 
         // Handle connection errors
         this.client.on('error', (err) => console.error('Redis Client Error', err));
@@ -17,7 +17,7 @@ class RedisClient {
 
     // Check if Redis is alive
     isAlive() {
-        return this.client?.connected || false;
+        return this.client?.isOpen || false;
     }
 
     // Get a value for a given key
