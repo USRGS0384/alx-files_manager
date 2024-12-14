@@ -9,7 +9,7 @@
         "start-server": "nodemon --exec babel-node --presets @babel/preset-env ./server.js",
         "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./worker.js",
         "test": "mocha --require @babel/register --exit",
-        "dev": "nodemon --exec babel-node --presets @babel/preset-env 0-main.js"
+        "dev": "nodemon --exec babel-node --presets @babel/preset-env"
     },
     "author": "Philip Ajuong Deng",
     "license": "ISC",
