@@ -1,14 +1,13 @@
 import redisClient from './utils/redis';
 
 (async () => {
-    console.log(redisClient.isAlive()); // Should print: true if Redis is connected
+    console.log(redisClient.isAlive()); // Should return true after successful connection
+    console.log(await redisClient.get('myKey')); // Should return null initially
+    await redisClient.set('myKey', 12, 5); // Sets a key with expiration
+    console.log(await redisClient.get('myKey')); // Should return 12
 
-    console.log(await redisClient.get('myKey')); // Should print: null (key doesn't exist)
-
-    await redisClient.set('myKey', '12', 5); // Set key 'myKey' with value '12' for 5 seconds
-    console.log(await redisClient.get('myKey')); // Should print: 12
-
-    await redisClient.del('myKey'); // Delete 'myKey'
-    console.log(await redisClient.get('myKey')); // Should print: null
+    setTimeout(async () => {
+        console.log(await redisClient.get('myKey')); // Should return null after expiration
+    }, 1000 * 10); // Wait 10 seconds
 })();
 
