@@ -1,0 +1,6 @@
+{
+  "exec": "babel-node --presets @babel/preset-env",
+  "ext": "js",
+  "ignore": ["node_modules"]
+}
+

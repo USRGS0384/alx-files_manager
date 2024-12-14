@@ -1,16 +1,16 @@
-import redisClient from './utils/redis';
+// 0-main.js
+const redisClient = require('./utils/redis'); // Adjust path if needed
 
 (async () => {
-    console.log(await redisClient.isAlive());  // Check if Redis is alive
-    console.log(await redisClient.get('myKey'));  // Get value for 'myKey'
+  console.log(await redisClient.isAlive()); // Check if Redis is alive
 
-    // Set value with expiration time (5 seconds)
-    await redisClient.set('myKey', 12, 5);
-    console.log(await redisClient.get('myKey'));  // Get value after setting
+  console.log(await redisClient.get('myKey')); // Try to get a key (should be null)
 
-    // Wait for 10 seconds and check again
-    setTimeout(async () => {
-        console.log(await redisClient.get('myKey'));  // Should return null after expiration
-    }, 1000 * 10);  // 10 seconds delay
+  await redisClient.set('myKey', 12, 5); // Set a key with a value and expiration time
+  console.log(await redisClient.get('myKey')); // Fetch the value just set (should be 12)
+
+  setTimeout(async () => {
+    console.log(await redisClient.get('myKey')); // Wait for the key to expire, then check again (should be null)
+  }, 10000); // Wait for 10 seconds
 })();
 

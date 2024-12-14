@@ -1,58 +1,39 @@
-import { createClient } from 'redis';
+// utils/redis.js
+const Redis = require('ioredis');
 
 class RedisClient {
   constructor() {
-    this.client = createClient();
-    
-    // Handling connection errors
+    this.client = new Redis(); // Connects to Redis on localhost:6379 by default
     this.client.on('error', (err) => {
       console.error('Redis error:', err);
     });
-
-    // Connecting event
-    this.client.on('connect', () => {
-      console.log('Redis client connected');
-    });
   }
 
-  // Check if Redis client is connected
-  isAlive() {
-    return this.client.isOpen;
+  // Check if Redis connection is alive
+  async isAlive() {
+    try {
+      const response = await this.client.ping();
+      return response === 'PONG';
+    } catch {
+      return false;
+    }
   }
 
-  // Get value for the given key
+  // Get the value of a key
   async get(key) {
-    try {
-      const value = await this.client.get(key);
-      return value; // Return the Redis value
-    } catch (err) {
-      console.error(`Failed to get value for key ${key}:`, err);
-      return null;
-    }
+    return this.client.get(key);
   }
 
-  // Set key-value with an expiration time
+  // Set a value with an expiration time
   async set(key, value, duration) {
-    try {
-      await this.client.setEx(key, duration, value); // setEx sets the expiration time
-      console.log(`Key ${key} set with expiration time of ${duration} seconds.`);
-    } catch (err) {
-      console.error(`Failed to set key ${key}:`, err);
-    }
+    await this.client.set(key, value, 'EX', duration);
   }
 
-  // Delete key-value from Redis
+  // Delete a key
   async del(key) {
-    try {
-      await this.client.del(key);
-      console.log(`Key ${key} deleted.`);
-    } catch (err) {
-      console.error(`Failed to delete key ${key}:`, err);
-    }
+    await this.client.del(key);
   }
 }
 
-// Export an instance of RedisClient
-const redisClient = new RedisClient();
-export default redisClient;
+module.exports = new RedisClient();
 
