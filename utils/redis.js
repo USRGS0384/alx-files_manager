@@ -10,6 +10,11 @@ class RedisClient {
     this.client.on('error', (err) => {
       console.error('Redis client error:', err);
     });
+
+    // Ensure that the Redis client is connected before proceeding
+    this.client.connect().catch((err) => {
+      console.error('Error connecting to Redis:', err);
+    });
   }
 
   // Check if Redis client is alive
