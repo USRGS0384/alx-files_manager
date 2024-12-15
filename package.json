@@ -9,8 +9,9 @@
         "start-server": "nodemon --exec babel-node --presets @babel/preset-env ./server.js",
         "start-worker": "nodemon --exec babel-node --presets @babel/preset-env ./worker.js",
         "test": "mocha --require @babel/register --exit",
-        "dev": "nodemon --exec babel-node --presets @babel/preset-env"
+        "dev": "nodemon --exec babel-node --presets @babel/preset-env \"1-main.js\""
     },
+    "type": "module",
     "author": "Philip Ajuong Deng",
     "license": "ISC",
     "dependencies": {
