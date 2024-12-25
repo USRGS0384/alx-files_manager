@@ -1,11 +1,15 @@
-import { Router } from 'express';
+import express from 'express';
 import AppController from '../controllers/AppController';
+import UsersController from '../controllers/UsersController';
 
-const router = Router();
+const router = express.Router();
 
-// Routes
+// Existing routes
 router.get('/status', AppController.getStatus);
 router.get('/stats', AppController.getStats);
+
+// New route for creating users
+router.post('/users', UsersController.postNew);
 
 export default router;
 
