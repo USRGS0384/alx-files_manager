@@ -1,5 +1,21 @@
 0x04. Files manager
 
+# Express API
+
+A simple Express API that checks the status of Redis and MongoDB, and returns statistics for users and files.
+
+## Installation
+
+1. Clone the repository.
+2. Run `npm install` to install dependencies.
+3. Ensure MongoDB and Redis are running.
+4. Run `npm run start-server` to start the server.
+
+## Endpoints
+
+- `GET /status`: Check if Redis and MongoDB are running.
+- `GET /stats`: Get the number of users and files in the database.
+
 This project is a summary of this back-end trimester: authentication, NodeJS, MongoDB, Redis, pagination and background processing.
 
 The objective is to build a simple platform to upload and view files:

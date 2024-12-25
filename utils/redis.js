@@ -5,7 +5,7 @@ class RedisClient {
     // Create Redis client
     this.client = redis.createClient({
       host: '127.0.0.1', // Ensure Redis is bound to localhost (default)
-      port: 6379,         // Default Redis port
+      port: 6379, // Default Redis port
     });
 
     // Error handling
@@ -56,4 +56,3 @@ class RedisClient {
 // Export a single instance of the RedisClient
 const redisClient = new RedisClient();
 export default redisClient;
-
