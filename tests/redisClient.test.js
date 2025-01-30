@@ -1,4 +1,4 @@
-import redisClient from '../utils/redis';
+const redisClient = require('../utils/redis');
 
 describe('redisClient', () => {
   jest.setTimeout(10000);

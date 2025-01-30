@@ -1,9 +1,9 @@
-import request from 'supertest';
-import { ObjectId } from 'mongodb';
-import { v4 as uuidv4 } from 'uuid';
-import app from '../server'; // Assuming your Express app is exported from server.js
-import dbClient from '../utils/db';
-import redisClient from '../utils/redis';
+const request = require('supertest');
+const { ObjectId } = require('mongodb');
+const { v4: uuidv4 } = require('uuid');
+const app = require('../server'); // Assuming your Express app is exported from server.js
+const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis');
 
 describe('API Endpoints', () => {
   let token;

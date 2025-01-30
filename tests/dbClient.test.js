@@ -1,7 +1,7 @@
-import dbClient from '../utils/db';
+const dbClient = require('../utils/db');
 
 describe('dbClient', () => {
-  jest.setTimeout(10000);
+  jest.timeout(10000);
 
   test('isAlive returns true when connected', () => {
     expect(dbClient.isAlive()).toBe(true);
