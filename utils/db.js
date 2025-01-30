@@ -1,34 +1,36 @@
-import { MongoClient } from 'mongodb';
+const { MongoClient } = require('mongodb');
 
 class DBClient {
   constructor() {
     const host = process.env.DB_HOST || 'localhost';
     const port = process.env.DB_PORT || 27017;
-    const dbName = process.env.DB_NAME || 'files_manager';
+    const database = process.env.DB_DATABASE || 'files_manager';
+    const url = `mongodb://${host}:${port}/${database}`;
 
-    this.client = new MongoClient(`mongodb://${host}:${port}`, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    this.client.connect().then(() => {
-      this.db = this.client.db(dbName);
-      console.log('Connected to MongoDB');
+    this.client = new MongoClient(url, { useUnifiedTopology: true });
+    this.client.connect((err) => {
+      if (err) {
+        console.error('MongoDB connection error:', err);
+      } else {
+        this.db = this.client.db(database);
+      }
     });
   }
 
   isAlive() {
-    return this.client.isConnected();
+    return !!this.client && !!this.client.topology && this.client.topology.isConnected();
   }
 
   async nbUsers() {
+    if (!this.db) return 0;
     return this.db.collection('users').countDocuments();
   }
 
   async nbFiles() {
+    if (!this.db) return 0;
     return this.db.collection('files').countDocuments();
   }
 }
 
-export default new DBClient();
-
+const dbClient = new DBClient();
+module.exports = dbClient;
