@@ -1,5 +1,3 @@
-import redisClient from './utils/redis';
-
 (async () => {
   try {
     const { redisClient } = await import('./utils/redis.js'); // Dynamic import
