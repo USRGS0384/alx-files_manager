@@ -7,15 +7,10 @@ class RedisClient {
     this.client.on('error', (error) => {
       console.error(`Redis client error: ${error}`);
     });
-
-      this.connected = false;
-      this.client.on('connect', () => {
-          this.connected = true;
-      })
   }
 
   isAlive() {
-      return this.connected;
+    return this.client.connected;
   }
 
   async get(key) {
@@ -32,17 +27,6 @@ class RedisClient {
     const asyncDel = promisify(this.client.del).bind(this.client);
     return asyncDel(key);
   }
-
-    quit() {
-        return new Promise((resolve, reject) => {
-            this.client.quit((err, res) => {
-                if (err) {
-                    console.error("Error quitting client:", err)
-                }
-                resolve()
-            })
-        })
-    }
 }
 
 const redisClient = new RedisClient();
