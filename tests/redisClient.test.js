@@ -1,27 +1,30 @@
+const { expect } = require('chai');
 const redisClient = require('../utils/redis');
 
-describe('redisClient', () => {
-  jest.setTimeout(10000);
+describe('redisClient', function () {
+  this.timeout(10000); // Set timeout for Mocha
 
-  it('isAlive returns true when connected', async function() {
-    expect(redisClient.isAlive()).toBe(true);
+  it('should return true when connected', function (done) {
+    expect(redisClient.isAlive()).to.be.true;
+    done();
   });
 
-  it('get returns null for non-existent key', async function() {
+  it('should return null for a non-existent key', async function () {
     const value = await redisClient.get('nonexistentkey');
-    expect(value).toBeNull();
+    expect(value).to.be.null;
   });
 
-  it('set and get work correctly', async function() {
+  it('should set and get values correctly', async function () {
     await redisClient.set('testkey', 'testvalue', 10);
     const value = await redisClient.get('testkey');
-    expect(value).toBe('testvalue');
+    expect(value).to.equal('testvalue');
   });
 
-  it('del removes a key', async function() {
+  it('should delete a key successfully', async function () {
     await redisClient.set('testkey', 'testvalue', 10);
     await redisClient.del('testkey');
     const value = await redisClient.get('testkey');
-    expect(value).toBeNull();
+    expect(value).to.be.null;
   });
 });
+

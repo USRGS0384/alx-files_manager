@@ -12,9 +12,8 @@ app.use('/', routes);
 
 // Start the server
 const server = app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
 // Export for testing
 module.exports = { app, server };
-

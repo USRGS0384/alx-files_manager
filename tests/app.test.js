@@ -15,7 +15,7 @@ describe('API Integration Tests', () => {
   let dbClientUsersCollectionStub;
   let dbClientFilesCollectionStub;
 
-  before(async function() {
+  before(async () => {
     // Stub database methods
     dbClientConnectStub = sinon.stub(dbClient, 'connect').resolves();
     dbClientUsersCollectionStub = sinon.stub(dbClient, 'usersCollection').resolves({
@@ -31,14 +31,14 @@ describe('API Integration Tests', () => {
     await dbClient.connect();
   });
 
-  after(function() {
+  after(() => {
     // Restore stubbed methods
     dbClientConnectStub.restore();
     dbClientUsersCollectionStub.restore();
     dbClientFilesCollectionStub.restore();
   });
 
-  describe('GET /status', function() {
+  describe('GET /status', () => {
     it('should return the status of Redis and DB', function(done) {
       chai.request(app)
         .get('/status')
@@ -52,7 +52,7 @@ describe('API Integration Tests', () => {
     });
   });
 
-  describe('GET /stats', function() {
+  describe('GET /stats', () => {
     it('should return the number of users and files', function(done) {
       chai.request(app)
         .get('/stats')
