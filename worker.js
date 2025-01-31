@@ -62,5 +62,5 @@ userQueue.process(async (job) => {
 
 module.exports = {
   fileQueue,
-  userQueue
+  userQueue,
 };

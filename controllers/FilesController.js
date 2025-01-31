@@ -22,7 +22,9 @@ class FilesController {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const { name, type, parentId = 0, isPublic = false, data } = req.body;
+    const {
+      name, type, parentId = 0, isPublic = false, data,
+    } = req.body;
 
     if (!name) {
       return res.status(400).json({ error: 'Missing name' });
@@ -147,7 +149,7 @@ class FilesController {
         type: file.type,
         isPublic: file.isPublic,
         parentId: file.parentId,
-      }))
+      })),
     );
   }
 
@@ -174,7 +176,7 @@ class FilesController {
 
     await dbClient.db.collection('files').updateOne(
       { _id: ObjectId(fileId) },
-      { $set: { isPublic: true } }
+      { $set: { isPublic: true } },
     );
 
     file.isPublic = true;
@@ -204,7 +206,7 @@ class FilesController {
 
     await dbClient.db.collection('files').updateOne(
       { _id: ObjectId(fileId) },
-      { $set: { isPublic: false } }
+      { $set: { isPublic: false } },
     );
 
     file.isPublic = false;
@@ -213,7 +215,7 @@ class FilesController {
 
   static async getFile(req, res) {
     const fileId = req.params.id;
-    const size = req.query.size;
+    const { size } = req.query;
     const token = req.header('X-Token');
 
     const file = await dbClient.db.collection('files').findOne({ _id: ObjectId(fileId) });

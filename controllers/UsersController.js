@@ -1,8 +1,8 @@
 const sha1 = require('sha1');
 const { ObjectId } = require('mongodb');
+const Queue = require('bull');
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
-const Queue = require('bull');
 
 const userQueue = new Queue('userQueue');
 

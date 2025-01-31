@@ -3,22 +3,22 @@ const redisClient = require('../utils/redis');
 describe('redisClient', () => {
   jest.setTimeout(10000);
 
-  test('isAlive returns true when connected', async () => {
+  it('isAlive returns true when connected', async function() {
     expect(redisClient.isAlive()).toBe(true);
   });
 
-  test('get returns null for non-existent key', async () => {
+  it('get returns null for non-existent key', async function() {
     const value = await redisClient.get('nonexistentkey');
     expect(value).toBeNull();
   });
 
-  test('set and get work correctly', async () => {
+  it('set and get work correctly', async function() {
     await redisClient.set('testkey', 'testvalue', 10);
     const value = await redisClient.get('testkey');
     expect(value).toBe('testvalue');
   });
 
-  test('del removes a key', async () => {
+  it('del removes a key', async function() {
     await redisClient.set('testkey', 'testvalue', 10);
     await redisClient.del('testkey');
     const value = await redisClient.get('testkey');
