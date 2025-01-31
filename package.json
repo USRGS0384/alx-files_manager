@@ -19,12 +19,14 @@
     "bull": "^3.16.0",
     "expect": "^29.7.0",
     "express": "^4.17.1",
+    "formidable": "^2.0.1",
+    "fs": "0.0.1-security",
     "image-thumbnail": "^1.0.10",
     "mime-types": "^2.1.27",
     "mongodb": "^3.5.9",
+    "pirates": "^4.0.6",
     "redis": "^2.8.0",
     "sha1": "^1.1.1",
-    "supertest": "^7.0.0",
     "uuid": "^8.2.0"
   },
   "devDependencies": {
@@ -32,7 +34,7 @@
     "@babel/core": "^7.8.0",
     "@babel/node": "^7.8.0",
     "@babel/preset-env": "^7.8.2",
-    "@babel/register": "^7.8.0",
+    "@babel/register": "^7.25.9",
     "chai": "^4.5.0",
     "chai-http": "^4.4.0",
     "eslint": "^6.8.0",
@@ -43,6 +45,7 @@
     "mocha": "^6.2.3",
     "nodemon": "^2.0.2",
     "request": "^2.88.0",
-    "sinon": "^7.5.0"
+    "sinon": "^7.5.0",
+    "supertest": "^6.3.4"
   }
 }
