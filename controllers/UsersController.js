@@ -32,8 +32,7 @@ class UsersController {
     const result = await dbClient.db.collection('users').insertOne(newUser);
     const userId = result.insertedId;
 
-    await userQueue.add({ userId: userId.toString() });
-
+    await userQueue.add({ userId: userId.toString() }); 
     return res.status(201).json({
       id: userId,
       email,
@@ -41,23 +40,28 @@ class UsersController {
   }
 
   static async getMe(req, res) {
-    const token = req.header('X-Token');
-    if (!token) {
-      return res.status(401).json({ error: 'Unauthorized' });
+    try {
+      const token = req.headers['x-token'];
+      if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  
+      const userId = await redisClient.get(`auth_${token}`);
+      if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+  
+      // Validate if userId is a valid ObjectId
+      if (!ObjectId.isValid(userId)) {
+        return res.status(400).json({ error: 'Invalid User ID' });
+      }
+  
+      const user = await dbClient.db.collection('users').findOne({ _id: new ObjectId(userId) });
+      if (!user) return res.status(404).json({ error: 'User not found' });
+  
+      return res.status(200).json({ id: user._id, email: user.email });
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    const userId = await redisClient.get(`auth_${token}`);
-    if (!userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const user = await dbClient.db.collection('users').findOne({ _id: ObjectId(userId) });
-    if (!user) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    return res.status(200).json({ id: user._id, email: user.email });
   }
 }
 
 module.exports = UsersController;
+
