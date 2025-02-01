@@ -23,14 +23,24 @@ class DBClient {
     return !!this.client && !!this.client.topology && this.client.topology.isConnected();
   }
 
+  async usersCollection() {
+    if (!this.db) return null;
+    return this.db.collection('users');
+  }
+
+  async filesCollection() {
+    if (!this.db) return null;
+    return this.db.collection('files');
+  }
+
   async nbUsers() {
     if (!this.db) return 0;
-    return this.db.collection('users').countDocuments(); // Ensure correct collection name
+    return this.db.collection('users').countDocuments();
   }
 
   async nbFiles() {
     if (!this.db) return 0;
-    return this.db.collection('files').countDocuments(); // Ensure correct collection name
+    return this.db.collection('files').countDocuments();
   }
 }
 
