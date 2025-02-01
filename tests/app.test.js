@@ -9,23 +9,24 @@ const dbClient = require('../utils/db');
 
 chai.use(chaiHttp);
 
-describe('API Integration Tests', function() {
+describe('API Integration Tests', function () {
   let dbClientUsersCollectionStub;
   let dbClientFilesCollectionStub;
   let redisClientGetStub;
   let redisClientSetStub;
 
-  before(function() {
+  before(function () {
     // Stub database methods
     dbClientUsersCollectionStub = sinon.stub(dbClient, 'usersCollection').returns({
       insertOne: sinon.stub().resolves({ insertedId: 'some-id' }),
       findOne: sinon.stub().resolves(null),
-      countDocuments: sinon.stub().resolves(5)
+      countDocuments: sinon.stub().resolves(5),
     });
+
     dbClientFilesCollectionStub = sinon.stub(dbClient, 'filesCollection').returns({
       insertOne: sinon.stub().resolves({ insertedId: 'some-file-id' }),
       findOne: sinon.stub().resolves(null),
-      countDocuments: sinon.stub().resolves(5)
+      countDocuments: sinon.stub().resolves(5),
     });
 
     // Stub Redis methods
@@ -37,14 +38,15 @@ describe('API Integration Tests', function() {
     sinon.stub(redisClient, 'isAlive').returns(true);
   });
 
-  after(function() {
+  after(function () {
     // Restore all stubbed methods
     sinon.restore();
   });
 
-  describe('GET /status', function() {
-    it('should return the status of Redis and DB', function(done) {
-      chai.request(app)
+  describe('GET /status', function () {
+    it('should return the status of Redis and DB', function (done) {
+      chai
+        .request(app)
         .get('/status')
         .end((err, res) => {
           expect(res).to.have.status(200);
@@ -56,9 +58,10 @@ describe('API Integration Tests', function() {
     });
   });
 
-  describe('GET /stats', function() {
-    it('should return the number of users and files', function(done) {
-      chai.request(app)
+  describe('GET /stats', function () {
+    it('should return the number of users and files', function (done) {
+      chai
+        .request(app)
         .get('/stats')
         .end((err, res) => {
           expect(res).to.have.status(200);
@@ -70,14 +73,15 @@ describe('API Integration Tests', function() {
     });
   });
 
-  describe('POST /users', function() {
-    it('should create a new user', function(done) {
+  describe('POST /users', function () {
+    it('should create a new user', function (done) {
       const userData = {
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
       };
 
-      chai.request(app)
+      chai
+        .request(app)
         .post('/users')
         .send(userData)
         .end((err, res) => {
@@ -90,11 +94,12 @@ describe('API Integration Tests', function() {
     });
   });
 
-  describe('GET /connect', function() {
-    it('should authenticate a user and return a token', function(done) {
+  describe('GET /connect', function () {
+    it('should authenticate a user and return a token', function (done) {
       const authHeader = Buffer.from('test@example.com:password123').toString('base64');
 
-      chai.request(app)
+      chai
+        .request(app)
         .get('/connect')
         .set('Authorization', `Basic ${authHeader}`)
         .end((err, res) => {
@@ -106,12 +111,13 @@ describe('API Integration Tests', function() {
     });
   });
 
-  describe('GET /disconnect', function() {
-    it('should disconnect a user', function(done) {
+  describe('GET /disconnect', function () {
+    it('should disconnect a user', function (done) {
       const token = 'valid_token';
       redisClientGetStub.withArgs(`auth_${token}`).resolves('user_id');
 
-      chai.request(app)
+      chai
+        .request(app)
         .get('/disconnect')
         .set('X-Token', token)
         .end((err, res) => {
@@ -121,17 +127,19 @@ describe('API Integration Tests', function() {
     });
   });
 
-  describe('GET /users/me', function() {
-    it('should return the current user', function(done) {
+  describe('GET /users/me', function () {
+    it('should return the current user', function (done) {
       const token = 'valid_token';
       const userId = 'user_id';
       redisClientGetStub.withArgs(`auth_${token}`).resolves(userId);
+
       dbClientUsersCollectionStub().findOne.withArgs({ _id: userId }).resolves({
         _id: userId,
-        email: 'test@example.com'
+        email: 'test@example.com',
       });
 
-      chai.request(app)
+      chai
+        .request(app)
         .get('/users/me')
         .set('X-Token', token)
         .end((err, res) => {
@@ -144,3 +152,4 @@ describe('API Integration Tests', function() {
     });
   });
 });
+
