@@ -1,21 +1,16 @@
-const express = require('express');
-const dbClient = require('./utils/db');
-const redisClient = require('./utils/redis');
+const express = require("express")
+const routes = require("./routes")
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const app = express()
+const port = process.env.PORT || 5000
 
-// Middleware
-app.use(express.json());
+app.use(express.json())
+app.use("/", routes)
 
-// Routes
-app.get('/status', async (req, res) => {
-  res.status(200).json({ redis: redisClient.isAlive(), db: dbClient.isAlive() });
-});
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`)
+})
 
-const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app
 
-module.exports = server; // Ensure correct export for tests
 
