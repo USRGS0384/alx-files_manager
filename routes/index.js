@@ -7,10 +7,8 @@ const UserController = require('../controllers/UserController');
 // Initialize router
 const router = express.Router();
 
-// Status Route
+// Status and Stats Routes
 router.get('/status', AppController.getStatus);
-
-// Add the missing /stats route
 router.get('/stats', AppController.getStats);
 
 // Authentication Routes
@@ -24,3 +22,4 @@ router.post('/files', FilesController.postUpload);
 
 // Export the router module
 module.exports = router;
+
