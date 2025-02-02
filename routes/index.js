@@ -2,7 +2,7 @@ const express = require('express');
 const AppController = require('../controllers/AppController');
 const AuthController = require('../controllers/AuthController');
 const FilesController = require('../controllers/FilesController');
-const UserController = require('../controllers/UserController');
+const UsersController = require('../controllers/UsersController');
 
 // Initialize router
 const router = express.Router();
@@ -15,7 +15,7 @@ router.get('/stats', AppController.getStats);
 router.get('/connect', AuthController.connect);
 
 // User Routes
-router.post('/users', UserController.postNew);
+router.post('/users', UsersController.postNew);
 
 // File Routes
 router.post('/files', FilesController.postUpload);
