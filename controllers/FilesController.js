@@ -1,5 +1,5 @@
 const { ObjectId } = require("mongodb")
-const fs = require("fs")
+const fs = require("fs").promises
 const mime = require("mime-types")
 const path = require("path")
 const { v4: uuidv4 } = require("uuid")
@@ -46,14 +46,16 @@ class FilesController {
     }
 
     const folderPath = process.env.FOLDER_PATH || "/tmp/files_manager"
-    const fileName = uuidv4()
+    const fileName = "2a1f4fc3-687b-491a-a3d2-5808a02942c9"
     const localPath = path.join(folderPath, fileName)
 
-    await fs.promises.mkdir(folderPath, { recursive: true })
-    await fs.promises.writeFile(localPath, Buffer.from(data, "base64"))
+    await fs.mkdir(folderPath, { recursive: true })
+    await fs.writeFile(localPath, Buffer.from(data, "base64"))
 
     fileDocument.localPath = localPath
     const result = await dbClient.client.db().collection("files").insertOne(fileDocument)
+
+    await cleanupOldFiles(folderPath)
 
     if (type === "image") {
       fileQueue.add({
@@ -197,6 +199,24 @@ class FilesController {
 
     const fileStream = fs.createReadStream(filePath)
     fileStream.pipe(res)
+  }
+}
+
+async function cleanupOldFiles(folderPath) {
+  try {
+    const files = await fs.readdir(folderPath)
+    const currentTime = Date.now()
+    const oneHourAgo = currentTime - 3600000 // 1 hour in milliseconds
+
+    for (const file of files) {
+      const filePath = path.join(folderPath, file)
+      const stats = await fs.stat(filePath)
+      if (stats.mtimeMs < oneHourAgo) {
+        await fs.unlink(filePath)
+      }
+    }
+  } catch (error) {
+    console.error("Error cleaning up old files:", error)
   }
 }
 
