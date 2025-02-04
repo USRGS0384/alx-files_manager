@@ -1,27 +1,24 @@
-const dbClient = require('../utils/db');
-const redisClient = require('../utils/redis');
+const redisClient = require("../utils/redis")
+const dbClient = require("../utils/db")
 
 class AppController {
-  // Route: GET /status
   static getStatus(req, res) {
-    res.status(200).json({
+    const status = {
       redis: redisClient.isAlive(),
       db: dbClient.isAlive(),
-    });
+    }
+    res.status(200).json(status)
   }
 
-  // Route: GET /stats
   static async getStats(req, res) {
-    try {
-      const usersCount = await dbClient.nbUsers();
-      const filesCount = await dbClient.nbFiles();
-      res.status(200).json({ users: usersCount, files: filesCount });
-    } catch (error) {
-      res.status(500).json({ error: 'Internal Server Error' });
+    const stats = {
+      users: await dbClient.nbUsers(),
+      files: await dbClient.nbFiles(),
     }
+    res.status(200).json(stats)
   }
 }
 
-// Export using CommonJS
-module.exports = AppController;
+module.exports = AppController
+
 

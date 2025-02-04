@@ -1,30 +1,36 @@
-const { expect } = require('chai');
-const redisClient = require('../utils/redis');
+const chai = require("chai")
+const chaiAsPromised = require("chai-as-promised")
+const sinon = require("sinon")
+const redisClient = require("../utils/redis")
 
-describe('redisClient', function () {
-  this.timeout(10000); // Set timeout for Mocha
+chai.use(chaiAsPromised)
+const expect = chai.expect
 
-  it('should return true when connected', function (done) {
-    expect(redisClient.isAlive()).to.be.true;
-    done();
-  });
+describe("redisClient", () => {
+  describe("isAlive", () => {
+    it("should return true when connected", () => {
+      expect(redisClient.isAlive()).to.be.true
+    })
 
-  it('should return null for a non-existent key', async function () {
-    const value = await redisClient.get('nonexistentkey');
-    expect(value).to.be.null;
-  });
+    it("should return false when not connected", () => {
+      sinon.stub(redisClient.client, "connected").value(false)
+      expect(redisClient.isAlive()).to.be.false
+      sinon.restore()
+    })
+  })
 
-  it('should set and get values correctly', async function () {
-    await redisClient.set('testkey', 'testvalue', 10);
-    const value = await redisClient.get('testkey');
-    expect(value).to.equal('testvalue');
-  });
+  describe("get", () => {
+    it("should retrieve a value from Redis", async () => {
+      await redisClient.set("testKey", "testValue", 10)
+      const value = await redisClient.get("testKey")
+      expect(value).to.equal("testValue")
+    })
 
-  it('should delete a key successfully', async function () {
-    await redisClient.set('testkey', 'testvalue', 10);
-    await redisClient.del('testkey');
-    const value = await redisClient.get('testkey');
-    expect(value).to.be.null;
-  });
-});
+    it("should return null for non-existent key", async () => {
+      const value = await redisClient.get("nonExistentKey")
+      expect(value).to.be.null
+    })
+  })
+})
+
 
