@@ -62,7 +62,14 @@ class FilesController {
       })
     }
 
-    return res.status(201).json({ id: result.insertedId, ...fileDocument })
+    return res.status(201).json({
+      id: result.insertedId.toString(),
+      userId: userId,
+      name,
+      type,
+      isPublic,
+      parentId,
+    })
   }
 
   static async getShow(req, res) {
